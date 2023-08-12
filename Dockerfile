@@ -30,7 +30,7 @@ RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
 
 # Build
 
-RUN cd crates/rust_analyzer_wasm && wasm-pack build --target web --out-dir ../../packages/ink-editor/pkg
+RUN cd crates/rust_analyzer_wasm && wasm-pack build --target web --out-dir ../../packages/move-editor/pkg
 
 # Start from base image
 FROM base as frontend-bindings
@@ -65,7 +65,7 @@ RUN make install
 
 COPY --from=frontend-bindings /app/packages/_generated/commontypes /app/packages/_generated/commontypes
 COPY --from=frontend-change-json /app/packages/_generated/change /app/packages/_generated/change
-COPY --from=frontend-rust-analyzer /app/packages/ink-editor/pkg /app/packages/ink-editor/pkg
+COPY --from=frontend-rust-analyzer /app/packages/move-editor/pkg /app/packages/move-editor/pkg
 
 # Set ENV vars
 

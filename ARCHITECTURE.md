@@ -9,7 +9,7 @@
 - [Architecture of the individual packages:](#architecture-of-the-individual-packages)
   - [Playground](#playground)
   - [Components](#components)
-  - [Ink Editor](#ink-editor)
+  - [Ink Editor](#move-editor)
   - [Backend](#backend)
   - [Rust Analyzer WASM](#rust-analyzer-wasm)
   - [Crate Extractor](#crate-extractor) - [Description](#description)
@@ -47,7 +47,7 @@ We provide here a detailed description of the architecture of ink! Playground an
 
 ### Ink Editor
 
-- Project directory: `/packages/ink-editor`
+- Project directory: `/packages/move-editor`
 
 ### Backend
 

@@ -66,7 +66,7 @@ pub async fn route_compile(
 ) -> impl Responder {
     let compile_result = spawn_blocking(move || {
         compile_strategy(CompilationRequest {
-            source: req.source.to_string(),
+            source: req.source.to_string(),toml: req.toml.to_string(),
         })
     })
     .await
@@ -102,7 +102,7 @@ pub async fn route_test(
 ) -> impl Responder {
     let testing_result = spawn_blocking(move || {
         compile_strategy(TestingRequest {
-            source: req.source.to_string(),
+            source: req.source.to_string(), toml: req.toml.to_string(),
         })
     })
     .await
@@ -126,7 +126,7 @@ pub async fn route_format(
 ) -> impl Responder {
     let formatting_result = spawn_blocking(move || {
         formatting_strategy(FormattingRequest {
-            source: req.source.to_string(),
+            source: req.source.to_string(),toml: req.toml.to_string(),
         })
     })
     .await
@@ -204,6 +204,7 @@ mod tests {
 
         let req = CompilationRequest {
             source: "foo".to_string(),
+            toml: "foo".to_string(),
         };
         let req = test::TestRequest::post()
             .set_json(&req)
@@ -234,6 +235,7 @@ mod tests {
 
         let req = CompilationRequest {
             source: "bar".to_string(),
+            toml: "bar".to_string(),
         };
 
         let req = test::TestRequest::post()
@@ -264,6 +266,7 @@ mod tests {
 
         let req = TestingRequest {
             source: "foo".to_string(),
+            toml: "foo".to_string(),
         };
         let req = test::TestRequest::post()
             .set_json(&req)
@@ -293,6 +296,7 @@ mod tests {
 
         let req = TestingRequest {
             source: "bar".to_string(),
+            toml: "bar".to_string(),
         };
         let req = test::TestRequest::post()
             .set_json(&req)

@@ -11,7 +11,7 @@ import {
   DeployIcon,
   FormatIcon,
 } from '~/symbols';
-import { OverlayPanel, ButtonWithIcon } from '@paritytech/components/';
+import { OverlayPanel, ButtonWithIcon } from '@aric0x02/components/';
 import { SettingsSubmenu } from './SettingsSubmenu';
 import { ShareSubmenu } from './ShareSubmenu';
 
@@ -23,7 +23,7 @@ import { compile } from '~/context/side-effects/compile';
 import { testing } from '~/context/side-effects/testing';
 import { format } from '~/context/side-effects/format';
 import * as constants from '~/constants';
-import { Colors } from '@paritytech/components/ButtonWithIcon';
+import { Colors } from '@aric0x02/components/ButtonWithIcon';
 
 const openContractsUiUrl = (): void => {
   window.open(constants.CONTRACTS_UI_URL, '_blank');

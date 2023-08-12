@@ -1,4 +1,4 @@
-import { Splitter, SplitterPanel } from '@paritytech/components/';
+import { Splitter, SplitterPanel } from '@aric0x02/components/';
 import { ReactElement } from 'react';
 
 type LayoutProps = {

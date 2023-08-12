@@ -1,8 +1,8 @@
-import { CompileApiResponse } from '@paritytech/ink-editor/api/compile';
-import { TestingApiResponse } from '@paritytech/ink-editor/api/testing';
+import { CompileApiResponse } from '@aric0x02/move-editor/api/compile';
+import { TestingApiResponse } from '@aric0x02/move-editor/api/testing';
 import { Uri } from 'monaco-editor/esm/vs/editor/editor.api';
-import { GistCreateApiResponse } from '@paritytech/ink-editor/api/gists';
-import { FormattingApiResponse } from '@paritytech/ink-editor/api/format';
+import { GistCreateApiResponse } from '@aric0x02/move-editor/api/gists';
+import { FormattingApiResponse } from '@aric0x02/move-editor/api/format';
 
 export const defaultState: State = {
   darkmode: true,

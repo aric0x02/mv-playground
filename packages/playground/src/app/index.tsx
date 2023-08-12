@@ -1,5 +1,5 @@
 import { Console } from './Console';
-import { InkEditor } from '@paritytech/ink-editor';
+import { MoveEditor } from '@aric0x02/move-editor';
 import { Layout } from './Layout';
 import { Header } from './Header';
 import { AppContext, AppProvider } from '~/context/app/';
@@ -57,7 +57,7 @@ const App = (): ReactElement => {
     <Layout
       header={<Header />}
       editor={
-        <InkEditor
+        <MoveEditor
           onRustAnalyzerStartLoad={onRustAnalyzerStartLoad}
           onRustAnalyzerFinishLoad={onRustAnalyzerFinishLoad}
           numbering={state.numbering}

@@ -165,7 +165,7 @@ We can divide this Repo into two main contributions:
 
 This is the main Frontend Webapp which provides the ink! Playground with Rust Analyzer and compilation functionalities.
 
-- #### `ink-editor`
+- #### `move-editor`
 
 This isolates the components providing the monaco editor with integrated Rust Analyzer and the API endpoints for code compilation and Github gist creation into its own package.
 
@@ -175,7 +175,7 @@ Contains the basic UI building blocks. Makes use of [PRIMEREACT](https://www.pri
 
 - #### `_generated`
 
-This is the target directory for auto generated types, files & bindings. It currently contains the `change` package which receives the `change.json` file from the `crate_extractor` crate and the `commontypes` package which carries the bindings and types which allow the Frontend (specifically the API being contained in `ink-editor` package) to communicate with the backend service for code compilation and Gist generation.
+This is the target directory for auto generated types, files & bindings. It currently contains the `change` package which receives the `change.json` file from the `crate_extractor` crate and the `commontypes` package which carries the bindings and types which allow the Frontend (specifically the API being contained in `move-editor` package) to communicate with the backend service for code compilation and Gist generation.
 
 - #### `docker_tests`
 

@@ -13,9 +13,9 @@ module.exports = {
     '~/(.*)': '<rootDir>/src/$1',
     '^.+.(css|scss)$': 'identity-obj-proxy',
     'monaco-editor': '<rootDir>/../../node_modules/react-monaco-editor',
-    '@paritytech/components/(.*)': '<rootDir>/../components/src/$1',
-    '^@paritytech/components/': '<rootDir>/../components/src',
-    '@paritytech/ink-editor/(.*)': '<rootDir>/../ink-editor/src/$1',
-    '^@paritytech/ink-editor/': '<rootDir>/../ink-editor/src',
+    '@aric0x02/components/(.*)': '<rootDir>/../components/src/$1',
+    '^@aric0x02/components/': '<rootDir>/../components/src',
+    '@aric0x02/move-editor/(.*)': '<rootDir>/../move-editor/src/$1',
+    '^@aric0x02/move-editor/': '<rootDir>/../move-editor/src',
   },
 };

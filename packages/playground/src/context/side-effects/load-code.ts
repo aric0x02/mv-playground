@@ -1,7 +1,7 @@
 import { State, Dispatch as AppDispatch } from '../app/reducer';
 import { MessageDispatch } from '../messages/reducer';
-import { gistLoadRequest } from '@paritytech/ink-editor/api/gists';
-import Common from '@paritytech/commontypes';
+import { gistLoadRequest } from '@aric0x02/move-editor/api/gists';
+import Common from '@aric0x02/commontypes';
 import qs from 'qs';
 // See: https://github.com/webpack/webpack/issues/12900
 import exampleCode from '../../../../../crates/contract/lib.txt!=!../../../../../crates/contract/lib.rs';

@@ -1,7 +1,7 @@
 import { ReactElement, useContext, useMemo } from 'react';
-import { ConsoleMessages } from '@paritytech/components/';
+import { ConsoleMessages } from '@aric0x02/components/';
 import { MessageContext } from '~/context/messages';
-import { Message } from '@paritytech/components/';
+import { Message } from '@aric0x02/components/';
 
 export const Console = (): ReactElement => {
   const [state] = useContext(MessageContext);

@@ -1,0 +1,19 @@
+[package]
+name = "my"
+version = "0.0.0"
+
+
+[addresses]
+usertests = "gkNW9pAcCHxZrnoVkhLkEQtsLsW5NWTC75cdAdxAMs9LNYCYg"
+Alice = "gkQ5K6EnLRgZkwozG8GiBAEnJyM6FxzbSaSmVhKJ2w8FcK7ih"
+Bob = "gkNW9pAcCHxZrnoVkhLkEQtsLsW5NWTC75cdAdxAMs9LNYCYg"
+PontemFramework="0x1"
+Std="0x1"
+
+[dependencies.PontStdlib]
+local = "./stdlib/pont-stdlib"
+
+
+[dependencies.MoveStdlib]
+local = "./stdlib/move-stdlib"
+

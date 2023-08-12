@@ -45,7 +45,7 @@ generate-change-json:
 		-o packages/_generated/change/src/change.json
 
 generate-rust-analyzer:
-	wasm-pack build crates/rust_analyzer_wasm/ --out-dir ../../packages/ink-editor/pkg --target web
+	wasm-pack build crates/rust_analyzer_wasm/ --out-dir ../../packages/move-editor/pkg --target web
 
 generate: generate-rust-analyzer
 generate: generate-bindings
@@ -94,16 +94,16 @@ playground-bundlesize:
 ################################################################################
 
 components-clean:
-	yarn workspace @paritytech/components run clean
+	yarn workspace @aric0x02/components run clean
 
 components-test:
-	yarn workspace @paritytech/components run test
+	yarn workspace @aric0x02/components run test
 
 components-test-watch:
-	yarn workspace @paritytech/components run test:watch
+	yarn workspace @aric0x02/components run test:watch
 
 components-test-coverage:
-	yarn workspace @paritytech/components run test:coverage
+	yarn workspace @aric0x02/components run test:coverage
 
 ################################################################################
 # ENTRYPOINT: crate-extractor
@@ -152,7 +152,7 @@ crate-rust-analyzer-wasm-test: crate-rust-analyzer-wasm-test-chrome
 crate-rust-analyzer-wasm-test: crate-rust-analyzer-wasm-test-firefox
 
 crate-rust-analyzer-wasm-clean: 
-	rm -rf packages/ink-editor/pkg
+	rm -rf packages/move-editor/pkg
 
 ################################################################################
 # ECOSYSTEM: RUST

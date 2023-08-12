@@ -1,4 +1,4 @@
-import Common from '@paritytech/commontypes';
+import Common from '@aric0x02/commontypes';
 import { reducer, defaultState, CompileState, Action } from '~/context/app/reducer';
 
 describe('Given the reducer is used to manage state', () => {

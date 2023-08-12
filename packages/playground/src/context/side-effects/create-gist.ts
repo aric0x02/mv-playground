@@ -1,8 +1,8 @@
 import { State, Dispatch } from '../app/reducer';
 import { MessageAction, MessageDispatch, GistMessage } from '../messages/reducer';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { GistCreateApiResponse, gistCreateRequest } from '@paritytech/ink-editor/api/gists';
-import Common from '@paritytech/commontypes';
+import { GistCreateApiResponse, gistCreateRequest } from '@aric0x02/move-editor/api/gists';
+import Common from '@aric0x02/commontypes';
 import { GIST_CREATE_URL } from '~/env';
 
 const resetToNotAsked = (dispatch: Dispatch, dispatchMessage: MessageDispatch): void => {

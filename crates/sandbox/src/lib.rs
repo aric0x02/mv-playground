@@ -67,49 +67,50 @@ pub struct Sandbox {
     #[allow(dead_code)]
     scratch: TempDir,
     input_file: PathBuf,
+    move_toml: PathBuf,
     output_dir: PathBuf,
 }
 
 #[derive(Debug, Snafu)]
 pub enum Error {
     #[snafu(display("Unable to create temporary directory: {}", source))]
-    UnableToCreateTempDirSnafu { source: io::Error },
+    UnableToCreateTempDir { source: io::Error },
 
     #[snafu(display("Unable to create output directory: {}", source))]
-    UnableToCreateOutputDirSnafu { source: io::Error },
+    UnableToCreateOutputDir { source: io::Error },
 
     #[snafu(display("Unable to set permissions for output directory: {}", source))]
-    UnableToSetOutputPermissionsSnafu { source: io::Error },
+    UnableToSetOutputPermissions { source: io::Error },
 
     #[snafu(display("Unable to create source file: {}", source))]
-    UnableToCreateSourceFileSnafu { source: io::Error },
+    UnableToCreateSourceFile { source: io::Error },
 
     #[snafu(display("Unable to set permissions for source file: {}", source))]
-    UnableToSetSourcePermissionsSnafu { source: io::Error },
+    UnableToSetSourcePermissions { source: io::Error },
 
     #[snafu(display("Output was not valid UTF-8: {}", source))]
     OutputNotUtf8 { source: string::FromUtf8Error },
 
     #[snafu(display("Unable to read output file: {}", source))]
-    UnableToReadOutputSnafu { source: io::Error },
+    UnableToReadOutput { source: io::Error },
 
     #[snafu(display("Unable to start the compiler: {}", source))]
-    UnableToStartCompilerSnafu { source: io::Error },
+    UnableToStartCompiler { source: io::Error },
 
     #[snafu(display("Unable to find the compiler ID"))]
-    MissingCompilerIdSnafu,
+    MissingCompilerId,
 
     #[snafu(display("Unable to wait for the compiler: {}", source))]
-    UnableToWaitForCompilerSnafu { source: io::Error },
+    UnableToWaitForCompiler { source: io::Error },
 
     #[snafu(display("Unable to get output from the compiler: {}", source))]
-    UnableToGetOutputFromCompilerSnafu { source: io::Error },
+    UnableToGetOutputFromCompiler { source: io::Error },
 
     #[snafu(display("Unable to remove the compiler: {}", source))]
-    UnableToRemoveCompilerSnafu { source: io::Error },
+    UnableToRemoveCompiler { source: io::Error },
 
     #[snafu(display("Compiler execution took longer than {} ms", timeout.as_millis()))]
-    CompilerExecutionTimedOutSnafu {
+    CompilerExecutionTimedOut {
         source: tokio::time::error::Elapsed,
         timeout: Duration,
     },
@@ -120,6 +121,7 @@ pub type Result<T, E = Error> = std::result::Result<T, E>;
 #[derive(Deserialize, Serialize, TypeDef, Debug, Clone)]
 pub struct CompilationRequest {
     pub source: String,
+    pub toml: String,
 }
 
 #[derive(Deserialize, Serialize, TypeDef, PartialEq, Debug, Clone, Eq)]
@@ -139,6 +141,7 @@ pub enum CompilationResult {
 #[derive(Deserialize, Serialize, TypeDef, Debug, Clone)]
 pub struct TestingRequest {
     pub source: String,
+    pub toml: String,
 }
 
 #[derive(Deserialize, Serialize, TypeDef, PartialEq, Debug, Clone, Eq)]
@@ -151,6 +154,7 @@ pub enum TestingResult {
 #[derive(Deserialize, Serialize, TypeDef, Debug, Clone)]
 pub struct FormattingRequest {
     pub source: String,
+    pub toml: String,
 }
 
 #[derive(Deserialize, Serialize, TypeDef, PartialEq, Debug, Clone, Eq)]
@@ -173,23 +177,28 @@ const DOCKER_PROCESS_TIMEOUT_HARD: Duration = Duration::from_secs(60);
 impl Sandbox {
     pub fn new() -> Result<Self> {
         let scratch =
-            TempDir::new("playground").context(UnableToCreateTempDirSnafuSnafu)?;
-        let input_file = scratch.path().join("input.rs");
+            TempDir::new("playground").context(UnableToCreateTempDirSnafu)?;
+        let input_file = scratch.path().join("contract").join("sources").join("test.move");
+        let move_toml = scratch.path().join("contract").join("Move.toml");
         let output_dir = scratch.path().join("output");
-        fs::create_dir(&output_dir).context(UnableToCreateOutputDirSnafuSnafu)?;
+        fs::create_dir(&output_dir).context(UnableToCreateOutputDirSnafu)?;
 
         fs::set_permissions(&output_dir, wide_open_permissions())
-            .context(UnableToSetOutputPermissionsSnafuSnafu)?;
-
+            .context(UnableToSetOutputPermissionsSnafu)?;
+        let input_dir = scratch.path().join("contract").join("sources");
+        fs::create_dir_all(&input_dir).context(UnableToCreateOutputDirSnafu)?;
+        fs::set_permissions(&input_dir, wide_open_permissions())
+            .context(UnableToSetOutputPermissionsSnafu)?;
         Ok(Sandbox {
             scratch,
             input_file,
+            move_toml,
             output_dir,
         })
     }
 
     pub fn compile(&self, req: &CompilationRequest) -> Result<CompilationResult> {
-        self.write_source_code(&req.source)?;
+        self.write_source_code(&req.source,&req.toml)?;
 
         let command = build_compile_command(&self.input_file, &self.output_dir);
 
@@ -197,10 +206,10 @@ impl Sandbox {
 
         let output = run_command_with_timeout(command)?;
         let file = fs::read_dir(&self.output_dir)
-            .context(UnableToReadOutputSnafuSnafu)?
+            .context(UnableToReadOutputSnafu)?
             .flatten()
             .map(|entry| entry.path())
-            .find(|path| path.extension() == Some(OsStr::new("contract")));
+            .find(|path| path.extension() == Some(OsStr::new("pac")));
 
         let stdout = vec_to_str(output.stdout)?;
         let stderr = vec_to_str(output.stderr)?;
@@ -226,7 +235,7 @@ impl Sandbox {
     }
 
     pub fn test(&self, req: &TestingRequest) -> Result<TestingResult> {
-        self.write_source_code(&req.source)?;
+        self.write_source_code(&req.source,&req.toml)?;
 
         let command = build_testing_command(&self.input_file);
 
@@ -243,7 +252,7 @@ impl Sandbox {
     }
 
     pub fn format(&self, req: &FormattingRequest) -> Result<FormattingResult> {
-        self.write_source_code(&req.source)?;
+        self.write_source_code(&req.source,&req.toml)?;
 
         let command = build_formatting_command(&self.input_file);
 
@@ -262,11 +271,13 @@ impl Sandbox {
         Ok(formatting_response)
     }
 
-    fn write_source_code(&self, code: &str) -> Result<()> {
-        fs::write(&self.input_file, code).context(UnableToCreateSourceFileSnafuSnafu)?;
+    fn write_source_code(&self, code: &str, toml: &str) -> Result<()> {
+        fs::write(&self.input_file, code).context(UnableToCreateSourceFileSnafu)?;
         fs::set_permissions(&self.input_file, wide_open_permissions())
-            .context(UnableToSetSourcePermissionsSnafuSnafu)?;
-
+            .context(UnableToSetSourcePermissionsSnafu)?;
+        fs::write(&self.move_toml, toml).context(UnableToCreateSourceFileSnafu)?;
+        fs::set_permissions(&self.move_toml, wide_open_permissions())
+            .context(UnableToSetSourcePermissionsSnafu)?;
         println!(
             "Wrote {} bytes of source to {}",
             code.len(),
@@ -284,7 +295,7 @@ fn read(path: &Path) -> Result<Option<Vec<u8>>> {
     let f = match File::open(path) {
         Ok(f) => f,
         Err(ref e) if e.kind() == ErrorKind::NotFound => return Ok(None),
-        e => e.context(UnableToReadOutputSnafuSnafu)?,
+        e => e.context(UnableToReadOutputSnafu)?,
     };
     let mut f = BufReader::new(f);
     let metadata = fs::metadata(path).expect("unable to read metadata");
@@ -303,7 +314,7 @@ async fn run_command_with_timeout(mut command: Command) -> Result<std::process::
     let output = command
         .output()
         .await
-        .context(UnableToStartCompilerSnafuSnafu)?;
+        .context(UnableToStartCompilerSnafu)?;
     println!("Done! {:?}", output);
     // Exit early, in case we don't have the container
     // if !output.status.success() {
@@ -311,11 +322,11 @@ async fn run_command_with_timeout(mut command: Command) -> Result<std::process::
     // }
     // let response = &output.stdout;
     let stdout = String::from_utf8_lossy(&output.stdout);
-
+println!("stdout! {:?}", stdout);
     let id = stdout
         .lines()
         .next()
-        .context(MissingCompilerIdSnafuSnafu)?
+        .context(MissingCompilerIdSnafu)?
         .trim();
     let stderr = &output.stderr;
 
@@ -327,6 +338,7 @@ async fn run_command_with_timeout(mut command: Command) -> Result<std::process::
         Ok(Ok(o)) => {
             // Didn't time out, didn't fail to run
             let o = String::from_utf8_lossy(&o.stdout);
+            println!("o.stdout! {:?}", o);
             let code = o
                 .lines()
                 .next()
@@ -336,7 +348,7 @@ async fn run_command_with_timeout(mut command: Command) -> Result<std::process::
                 .unwrap_or(i32::MAX);
             Ok(ExitStatusExt::from_raw(code))
         }
-        Ok(e) => return e.context(UnableToWaitForCompilerSnafuSnafu), // Failed to run
+        Ok(e) => return e.context(UnableToWaitForCompilerSnafu), // Failed to run
         Err(e) => Err(e),                                             // Timed out
     };
 
@@ -346,8 +358,8 @@ async fn run_command_with_timeout(mut command: Command) -> Result<std::process::
     let mut output = command
         .output()
         .await
-        .context(UnableToGetOutputFromCompilerSnafuSnafu)?;
-
+        .context(UnableToGetOutputFromCompilerSnafu)?;
+println!("logs! {:?}", String::from_utf8_lossy(&output.stdout));
     // ----------
 
     let mut command = docker_command!(
@@ -358,9 +370,9 @@ async fn run_command_with_timeout(mut command: Command) -> Result<std::process::
     command
         .status()
         .await
-        .context(UnableToRemoveCompilerSnafuSnafu)?;
+        .context(UnableToRemoveCompilerSnafu)?;
 
-    let code = timed_out.context(CompilerExecutionTimedOutSnafuSnafu { timeout })?;
+    let code = timed_out.context(CompilerExecutionTimedOutSnafu { timeout })?;
 
     output.status = code;
     output.stderr = stderr.to_owned();
@@ -386,9 +398,9 @@ fn vec_to_str(v: Vec<u8>) -> Result<String> {
 mod tests {
     use super::*;
 
-    fn compile_check(source: String) -> Option<bool> {
+    fn compile_check(source: String,toml: String) -> Option<bool> {
         Sandbox::new()
-            .and_then(|sandbox| sandbox.compile(&CompilationRequest { source }))
+            .and_then(|sandbox| sandbox.compile(&CompilationRequest { source,toml }))
             .map(|result| {
                 match result {
                     CompilationResult::Success {
@@ -404,18 +416,44 @@ mod tests {
             })
             .ok()
     }
-
+    fn move_test_check(source: String,toml: String) -> Option<bool> {
+        Sandbox::new()
+            .and_then(|sandbox| sandbox.test(&TestingRequest { source,toml }))
+            .map(|result| {
+                match result {
+                    TestingResult::Success {
+                        stdout: _,
+                        stderr,
+                    } => stderr.is_empty(),
+                    TestingResult::Error {
+                        stdout: _,
+                        stderr: _,
+                    } => false,
+                }
+            })
+            .ok()
+    }
     #[test]
     fn test_compile_valid_code() {
-        let flipper_code = include_str!("../../contract/lib.rs");
-        let actual_result = compile_check(flipper_code.to_string());
+        let flipper_code = include_str!("../../contract/sources/EventProxy.move");
+        let flipper_toml = include_str!("../../contract/Move.toml");
+        let actual_result = compile_check(flipper_code.to_string(),flipper_toml.to_string());
+
+        assert_eq!(actual_result, Some(true))
+    }
+
+    #[test]
+    fn test_move_test_valid_code() {
+        let flipper_code = include_str!("../../contract/sources/EventProxy.move");
+        let flipper_toml = include_str!("../../contract/Move.toml");
+        let actual_result = move_test_check(flipper_code.to_string(),flipper_toml.to_string());
 
         assert_eq!(actual_result, Some(true))
     }
 
     #[test]
     fn test_compile_invalid_code() {
-        let actual_result = compile_check("".to_string());
+        let actual_result = compile_check("".to_string(),"".to_string());
 
         assert_eq!(actual_result, Some(false))
     }

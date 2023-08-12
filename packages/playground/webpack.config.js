@@ -6,7 +6,7 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const tailwindcss = require('tailwindcss');
 const { EnvironmentPlugin } = require('webpack');
 const { merge } = require('webpack-merge');
-const inkEditorConfig = require('../ink-editor/webpack.config');
+const moveEditorConfig = require('../move-editor/webpack.config');
 const CopyPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
 const analyticsUrl = process.env.ANALYTICS_URL;
@@ -24,8 +24,8 @@ const localConfig = {
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.wasm', '.css'],
     alias: {
       '~': path.resolve(__dirname, 'src/'),
-      '@paritytech/ink-editor': path.resolve(__dirname, '../ink-editor/src'),
-      '@paritytech/components': path.resolve(__dirname, '../components/src'),
+      '@aric0x02/move-editor': path.resolve(__dirname, '../move-editor/src'),
+      '@aric0x02/components': path.resolve(__dirname, '../components/src'),
     },
   },
   stats: 'errors-only',
@@ -97,4 +97,4 @@ const localConfig = {
   },
 };
 
-module.exports = merge(inkEditorConfig, localConfig);
+module.exports = merge(moveEditorConfig, localConfig);

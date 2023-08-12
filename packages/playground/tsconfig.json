@@ -18,14 +18,14 @@
     "baseUrl": "./",
     "paths": {
       "~/*": ["./src/*"],
-      "@paritytech/commontypes": ["../_generated/commontypes/src"],
-      "@paritytech/commontypes/*": ["../_generated/commontypes/src/*"],
+      "@aric0x02/commontypes": ["../_generated/commontypes/src"],
+      "@aric0x02/commontypes/*": ["../_generated/commontypes/src/*"],
 
-      "@paritytech/ink-editor": ["../ink-editor/src"],
-      "@paritytech/ink-editor/*": ["../ink-editor/src/*"],
+      "@aric0x02/move-editor": ["../move-editor/src"],
+      "@aric0x02/move-editor/*": ["../move-editor/src/*"],
 
-      "@paritytech/components": ["../components/src/"],
-      "@paritytech/components/*": ["../components/src/*"]
+      "@aric0x02/components": ["../components/src/"],
+      "@aric0x02/components/*": ["../components/src/*"]
     }
   },
   "include": ["src", "jest", "__tests__"],

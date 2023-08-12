@@ -1,0 +1,11 @@
+[package]
+name = "ide"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+syntax = { path = "../syntax" }
+ide_db = { path = "../ide_db", version = "0.0.0" }
+ide_diagnostics = { path = "../ide_diagnostics", version = "0.0.0" }

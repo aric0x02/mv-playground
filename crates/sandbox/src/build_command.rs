@@ -27,12 +27,12 @@ use tokio::process::Command;
 
 const DOCKER_PROCESS_TIMEOUT_SOFT: Duration = Duration::from_secs(20);
 
-const DOCKER_CONTAINER_NAME: &str = "ink-compiler";
+const DOCKER_CONTAINER_NAME: &str = "aric0x02/dovetest";
 
 const DOCKER_WORKDIR: &str = "/builds/contract/";
-
+const DOCKER_LIBDIR: &str = "/builds/contract/stdlib";
 const DOCKER_OUTPUT: &str = "/playground-result";
-
+const LIB_DIR: &str = "/var/folders/stdlib/";
 pub fn build_compile_command(input_file: &Path, output_dir: &Path) -> Command {
     let mut cmd = build_docker_command(input_file, Some(output_dir));
 
@@ -70,17 +70,22 @@ pub fn build_formatting_command(input_file: &Path) -> Command {
 }
 
 fn build_docker_command(input_file: &Path, output_dir: Option<&Path>) -> Command {
-    let file_name = "lib.rs";
+    // let file_name = input_file;
 
-    let mut mount_input_file = input_file.as_os_str().to_os_string();
+    let mut mount_input_file = input_file.parent().unwrap().parent().unwrap().as_os_str().to_os_string();
     mount_input_file.push(":");
     mount_input_file.push(DOCKER_WORKDIR);
-    mount_input_file.push(file_name);
+    // mount_input_file.push(file_name);
 
     let mut cmd = build_basic_secure_docker_command();
 
     cmd.arg("--volume").arg(&mount_input_file);
+    println!("std::env::current_dir()========{:?}",std::env::current_dir().unwrap());
+    let mut mount_output_dir = Path::new(LIB_DIR).as_os_str().to_os_string();
+        mount_output_dir.push(":");
+        mount_output_dir.push(DOCKER_LIBDIR);
 
+        cmd.arg("--volume").arg(&mount_output_dir);
     if let Some(output_dir) = output_dir {
         let mut mount_output_dir = output_dir.as_os_str().to_os_string();
         mount_output_dir.push(":");
@@ -125,14 +130,14 @@ fn build_basic_secure_docker_command() -> Command {
 }
 
 fn build_execution_command() -> Vec<String> {
-    let target_dir = "/target/ink";
+    let target_dir = "/builds/contract/build";
 
     let clean_cmd = format!(
-        "rm -rf {}/contract.* {}/metadata.json",
-        target_dir, target_dir
+        "rm -rf {}/*",
+        target_dir
     );
-    let build_cmd = "cargo contract build --offline 2>&1".to_string();
-    let move_cmd = format!("mv {}/contract.contract {}", target_dir, DOCKER_OUTPUT);
+    let build_cmd = "dove deploy  2>&1".to_string();
+    let move_cmd = format!("mv {}/my/bundles/my.pac {}", target_dir, DOCKER_OUTPUT);
 
     let command = format!("{} && {} && {}", clean_cmd, build_cmd, move_cmd);
 
@@ -142,7 +147,7 @@ fn build_execution_command() -> Vec<String> {
 }
 
 fn testing_execution_command() -> Vec<String> {
-    let test_cmd = "cargo test 2>&1".to_string();
+    let test_cmd = "dove test 2>&1".to_string();
 
     let cmd = vec!["/bin/bash".to_string(), "-c".to_string(), test_cmd];
 

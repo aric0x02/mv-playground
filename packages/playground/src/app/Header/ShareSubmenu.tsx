@@ -1,4 +1,4 @@
-import { ButtonWithIcon, LabeledLink } from '@paritytech/components/';
+import { ButtonWithIcon, LabeledLink } from '@aric0x02/components/';
 import { ReactElement, useContext } from 'react';
 import { GithubIcon } from '~/symbols';
 import { Dispatch, GistState, State } from '~/context/app/reducer';
@@ -6,8 +6,8 @@ import { gistCreate } from '~/context/side-effects/create-gist';
 import { AppContext } from '~/context/app/';
 import { MessageContext } from '~/context/messages/';
 import { MessageState, MessageDispatch } from '~/context/messages/reducer';
-import Common from '@paritytech/commontypes';
-import { GistCreateApiResponse } from '@paritytech/ink-editor/api/gists';
+import Common from '@aric0x02/commontypes';
+import { GistCreateApiResponse } from '@aric0x02/move-editor/api/gists';
 import qs from 'qs';
 
 const ViewError = ({ message }: { message: string }) => <div>{message}</div>;

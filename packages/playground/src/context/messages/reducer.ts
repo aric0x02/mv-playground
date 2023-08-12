@@ -1,5 +1,5 @@
-import Common from '@paritytech/commontypes';
-import { Message, Status, Severity, Prompt } from '@paritytech/components/';
+import Common from '@aric0x02/commontypes';
+import { Message, Status, Severity, Prompt } from '@aric0x02/components/';
 import * as sizeLimit from '~/constants';
 import { extractContractSize } from '../side-effects/compile';
 

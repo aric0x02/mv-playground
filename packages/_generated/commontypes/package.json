@@ -1,5 +1,5 @@
 {
-  "name": "@paritytech/commontypes",
+  "name": "@aric0x02/commontypes",
   "description": "Generated types from backend",
   "types": "src/index.d.ts"
 }

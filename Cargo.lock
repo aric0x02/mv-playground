@@ -535,6 +535,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4a4ddaa51a5bc52a6948f74c06d20aaaddb71924eab79b8c97a8c556e942d6a"
 
 [[package]]
+name = "base_db"
+version = "0.0.0"
+dependencies = [
+ "rustc-hash",
+ "salsa",
+ "syntax",
+ "test_utils",
+ "vfs",
+]
+
+[[package]]
 name = "beef"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -954,7 +965,7 @@ dependencies = [
  "serde",
  "serde_json",
  "tempfile",
- "toml",
+ "toml 0.7.3",
  "tracing",
  "url",
  "walkdir",
@@ -1009,6 +1020,12 @@ name = "core-foundation-sys"
 version = "0.8.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
+
+[[package]]
+name = "countme"
+version = "2.0.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "328b822bdcba4d4e402be8d9adb6eebf269f969f8eadef977a553ff3c4fbcb58"
 
 [[package]]
 name = "countme"
@@ -1784,6 +1801,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "generate_ast"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "stdx",
+ "test_utils",
+ "ungrammar",
+ "xshell",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.12.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1875,6 +1904,12 @@ checksum = "92c171d55b98633f4ed3860808f004099b36c1cc29c42cfc53aa8591b21efcf2"
 dependencies = [
  "crunchy",
 ]
+
+[[package]]
+name = "hashbrown"
+version = "0.11.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ab5ef0d4909ef3724cc8cce6ccc8572c5c817592e9285f5464f8e86f8bd3726e"
 
 [[package]]
 name = "hashbrown"
@@ -2145,6 +2180,33 @@ checksum = "0703ae284fc167426161c2e3f1da3ea71d94b21bedbcc9494e92b28e334e3dca"
 dependencies = [
  "cxx",
  "cxx-build",
+]
+
+[[package]]
+name = "ide"
+version = "0.1.0"
+dependencies = [
+ "ide_db",
+ "ide_diagnostics",
+ "syntax",
+]
+
+[[package]]
+name = "ide_db"
+version = "0.0.0"
+dependencies = [
+ "base_db",
+ "rustc-hash",
+ "syntax",
+]
+
+[[package]]
+name = "ide_diagnostics"
+version = "0.0.0"
+dependencies = [
+ "ide_db",
+ "rustc-hash",
+ "syntax",
 ]
 
 [[package]]
@@ -2896,6 +2958,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "518ef76f2f87365916b142844c16d8fefd85039bc5699050210a7778ee1cd1de"
 
 [[package]]
+name = "lsp-server"
+version = "0.5.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c351c75989da23b355226dc188dc2b52538a7f4f218d70fd7393c6b62b110444"
+dependencies = [
+ "crossbeam-channel",
+ "log",
+ "serde",
+ "serde_json",
+]
+
+[[package]]
+name = "lsp-types"
+version = "0.90.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6f3734ab1d7d157fc0c45110e06b587c31cd82bea2ccfd6b563cbff0aaeeb1d3"
+dependencies = [
+ "bitflags",
+ "serde",
+ "serde_json",
+ "serde_repr",
+ "url",
+]
+
+[[package]]
 name = "lsp-types"
 version = "0.94.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3025,11 +3112,48 @@ dependencies = [
 
 [[package]]
 name = "miow"
+version = "0.3.7"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9f1c5b025cda876f66ef43a113f91ebc9f4ccef34843000e0adf6ebbab84e21"
+dependencies = [
+ "winapi",
+]
+
+[[package]]
+name = "miow"
 version = "0.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a7377f7792b3afb6a3cba68daa54ca23c032137010460d667fda53a8d66be00e"
 dependencies = [
  "windows-sys 0.28.0",
+]
+
+[[package]]
+name = "move_language_server"
+version = "0.1.0"
+dependencies = [
+ "always-assert",
+ "anyhow",
+ "crossbeam-channel",
+ "ide",
+ "ide_db",
+ "ide_diagnostics",
+ "itertools",
+ "lsp-server",
+ "lsp-types 0.90.1",
+ "parking_lot 0.11.2",
+ "project_model",
+ "rustc-hash",
+ "serde",
+ "serde_json",
+ "stdx",
+ "syntax",
+ "threadpool",
+ "tracing",
+ "tracing-log",
+ "tracing-subscriber",
+ "tracing-tree",
+ "vfs",
 ]
 
 [[package]]
@@ -3332,10 +3456,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "parser"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "drop_bomb",
+ "rowan 0.13.2",
+]
+
+[[package]]
 name = "paste"
 version = "1.0.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9f746c4065a8fa3fe23974dd82f15431cc8d40779821001404d10d2e79ca7d79"
+
+[[package]]
+name = "paths"
+version = "0.0.0"
 
 [[package]]
 name = "pbkdf2"
@@ -3505,6 +3642,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2b63bdb0cd06f1f4dedf69b254734f9b45af66e4a031e42a7480257d9898b435"
 dependencies = [
  "unicode-ident",
+]
+
+[[package]]
+name = "project_model"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "base_db",
+ "paths",
+ "rustc-hash",
+ "serde",
+ "serde_json",
+ "stdx",
+ "toml 0.5.11",
 ]
 
 [[package]]
@@ -3872,7 +4023,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ecbf48b480ad82ae294e19ae058ffd632b0fa5418e2c8963bb11568bae241813"
 dependencies = [
  "cfg-if",
- "countme",
+ "countme 3.0.1",
  "libc",
  "once_cell",
  "perf-event",
@@ -3911,7 +4062,7 @@ checksum = "e8aba2dc0c0a84703762698f6813b09d72dc8101709ee9b6dfc628aa09d7197f"
 dependencies = [
  "always-assert",
  "libc",
- "miow",
+ "miow 0.4.0",
  "winapi",
 ]
 
@@ -3929,7 +4080,7 @@ dependencies = [
  "ra_ap_profile",
  "ra_ap_stdx",
  "ra_ap_text_edit",
- "rowan",
+ "rowan 0.15.11",
  "rustc-ap-rustc_lexer",
  "rustc-hash",
  "smol_str",
@@ -4273,11 +4424,24 @@ checksum = "fc874b127765f014d792f16763a81245ab80500e2ad921ed4ee9e82481ee08fe"
 
 [[package]]
 name = "rowan"
+version = "0.13.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4a938f42b9c73aeece236481f37adb3debb7dfe3ae347cd6a45b5797d9ce4250"
+dependencies = [
+ "countme 2.0.4",
+ "hashbrown 0.11.2",
+ "memoffset 0.6.5",
+ "rustc-hash",
+ "text-size",
+]
+
+[[package]]
+name = "rowan"
 version = "0.15.11"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64449cfef9483a475ed56ae30e2da5ee96448789fb2aa240a04beb6a055078bf"
 dependencies = [
- "countme",
+ "countme 3.0.1",
  "hashbrown 0.12.3",
  "memoffset 0.8.0",
  "rustc-hash",
@@ -4293,7 +4457,7 @@ dependencies = [
  "instant",
  "js-sys",
  "log",
- "lsp-types",
+ "lsp-types 0.94.0",
  "ra_ap_cfg",
  "ra_ap_ide",
  "ra_ap_ide_db",
@@ -5390,6 +5554,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a2eb9349b6444b326872e140eb1cf5e7c522154d69e7a0ffb0fb81c06b37543f"
 
 [[package]]
+name = "stdx"
+version = "0.0.0"
+dependencies = [
+ "always-assert",
+ "backtrace",
+ "libc",
+ "miow 0.3.7",
+ "winapi",
+]
+
+[[package]]
 name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5563,6 +5738,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "syntax"
+version = "0.0.0"
+dependencies = [
+ "expect-test",
+ "parser",
+ "proc-macro2",
+ "quote",
+ "rowan 0.13.2",
+ "smol_str",
+ "stdx",
+ "test_utils",
+ "text-size",
+ "ungrammar",
+ "xshell",
+]
+
+[[package]]
 name = "tap"
 version = "1.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5607,6 +5799,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "test_utils"
+version = "0.0.0"
+dependencies = [
+ "dissimilar",
+ "rustc-hash",
+ "stdx",
+ "text-size",
+]
+
+[[package]]
 name = "text-size"
 version = "1.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -5640,6 +5842,15 @@ checksum = "3fdd6f064ccff2d6567adcb3873ca630700f00b5ad3f060c25b5dcfd9a4ce152"
 dependencies = [
  "cfg-if",
  "once_cell",
+]
+
+[[package]]
+name = "threadpool"
+version = "1.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d050e60b33d41c19108b32cea32164033a9013fe3b46cbd4457559bfbf77afaa"
+dependencies = [
+ "num_cpus",
 ]
 
 [[package]]
@@ -5829,6 +6040,15 @@ dependencies = [
 
 [[package]]
 name = "toml"
+version = "0.5.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f4f7f0dd8d50a853a531c426359045b1998f04219d88799810762cd4ad314234"
+dependencies = [
+ "serde",
+]
+
+[[package]]
+name = "toml"
 version = "0.7.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b403acf6f2bb0859c93c7f0d967cb4a75a7ac552100f9322faf64dc047669b21"
@@ -5944,6 +6164,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "tracing-tree"
+version = "0.1.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a2a408a91fbd4850982080e643a261aef2a2ef72c8263ce353b61d25acfc2c49"
+dependencies = [
+ "ansi_term",
+ "atty",
+ "tracing-core",
+ "tracing-log",
+ "tracing-subscriber",
+]
+
+[[package]]
 name = "trie-db"
 version = "0.27.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6054,6 +6287,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "ungrammar"
+version = "1.16.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a3e5df347f0bf3ec1d670aad6ca5c6a1859cd9ea61d2113125794654ccced68f"
+
+[[package]]
 name = "unicase"
 version = "2.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -6142,6 +6381,16 @@ name = "version_check"
 version = "0.9.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "49874b5167b65d7193b8aba1567f5c7d93d001cafc34600cee003eda787e483f"
+
+[[package]]
+name = "vfs"
+version = "0.0.0"
+dependencies = [
+ "fst",
+ "indexmap",
+ "paths",
+ "rustc-hash",
+]
 
 [[package]]
 name = "walkdir"
@@ -6794,6 +7043,21 @@ checksum = "05f360fc0b24296329c78fda852a1e9ae82de9cf7b27dae4b7f62f118f77b9ed"
 dependencies = [
  "tap",
 ]
+
+[[package]]
+name = "xshell"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "eaad2035244c56da05573d4d7fda5f903c60a5f35b9110e157a14a1df45a9f14"
+dependencies = [
+ "xshell-macros",
+]
+
+[[package]]
+name = "xshell-macros"
+version = "0.1.17"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4916a4a3cad759e499a3620523bf9545cc162d7a06163727dde97ce9aaa4cf39"
 
 [[package]]
 name = "xxhash-rust"

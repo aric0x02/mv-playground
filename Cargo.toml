@@ -1,5 +1,5 @@
 [workspace]
-members = ["crates/*"]
+members = ["crates/*","move_language_server_crates/*"]
 exclude = ["crates/contract/*"]
 
 default-members = ["crates/backend"]
