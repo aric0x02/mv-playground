@@ -8,7 +8,7 @@ export type LabeledLinkProps = {
 
 export const LabeledLink = ({ label, link, isPlaceholderText }: LabeledLinkProps): ReactElement => {
   const [animatePing, setAnimatePing] = useState(false);
-  const abbreviatedLink = link.substr(0, 32);
+  const abbreviatedLink = link.substring(0, 32);
 
   const showAnimation = (): void => {
     setAnimatePing(true);
