@@ -392,7 +392,7 @@ interface TreeFilterValueChangeEvent {
  * Custom click event
  * @see {@link TreeProps.onNodeClick}
  */
-interface TreeNodeClickEvent {
+export interface TreeNodeClickEvent {
     /**
      * Browser event
      */

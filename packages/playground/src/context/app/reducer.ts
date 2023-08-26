@@ -14,6 +14,7 @@ export const defaultState: State = {
   monacoUri: null,
   gist: { type: 'NOT_ASKED' },
   contractSize: null,
+  fileId: null,
   rustAnalyzer: false,
 };
 
@@ -27,6 +28,7 @@ export type State = {
   monacoUri: Uri | null;
   gist: GistState;
   contractSize: number | null;
+  fileId: string | null;
   rustAnalyzer: boolean;
 };
 
@@ -60,6 +62,7 @@ export type Action =
   | { type: 'SET_GIST_STATE'; payload: GistState }
   | { type: 'SET_URI'; payload: Uri }
   | { type: 'SET_CONTRACT_SIZE'; payload: number | null }
+  | { type: 'SET_FILE_ID'; payload: string | null }
   | { type: 'SET_RUST_ANALYZER_STATE'; payload: boolean };
 
 export type Dispatch = (action: Action) => void;
@@ -115,6 +118,11 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         contractSize: action.payload,
+      };
+    case 'SET_FILE_ID':
+      return {
+        ...state,
+        fileId: action.payload,
       };
     default:
       return state;

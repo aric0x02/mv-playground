@@ -5,7 +5,7 @@
 // import '../../index.css';
 // import ReactDOM from 'react-dom';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useContext, useEffect, useRef } from 'react';
 import { Tree } from 'primereact/tree';
 import TreeNode from 'primereact/treenode';
 import { ContextMenu } from 'primereact/contextmenu';
@@ -13,8 +13,13 @@ import { Toast } from 'primereact/toast';
 import { Inplace, InplaceDisplay, InplaceContent } from 'primereact/inplace';
 import { InputText } from 'primereact/inputtext';
 import "primereact/resources/themes/lara-dark-indigo/theme.css";
-import { TreeNodeTemplateOptions, TreeEventNodeEvent } from './tree';
+import { TreeNodeTemplateOptions, TreeEventNodeEvent, TreeNodeClickEvent } from './tree';
+import { Dispatch, State } from '~/context/app/reducer';
+import { AppContext, AppProvider } from '~/context/app/';
+
 export const MoveFileTree = () => {
+    const [, dispatch]: [State, Dispatch] = useContext(AppContext);
+
     const nodesInit = [
         {
             "key": "0",
@@ -124,7 +129,6 @@ export const MoveFileTree = () => {
     };
 
     const onInplaceClose = (key: string | number | undefined) => {
-        console.log("========", moveFileNames[key as keyof typeof moveFileNames], key);
         let fileName = addMoveFileExtension(moveFileNames[key as keyof typeof moveFileNames]);
         if (isFileExist(fileName, key)) {
             if (toast.current != null) {
@@ -139,7 +143,6 @@ export const MoveFileTree = () => {
                     if (!isFileExist(fileName, key)) {
                         fileName = addMoveFileExtension(fileName);
                         fileName = fileName.trim();
-                        console.log("===fileName=====", fileName);
                         updateMoveFileNames(key, fileName);
                         break
                     }
@@ -162,6 +165,11 @@ export const MoveFileTree = () => {
             if (cmMoveFile.current != null) {
                 cmMoveFile.current.show(event.originalEvent)
             }
+        }
+    };
+    const onTreeNodeClick = (event: TreeNodeClickEvent) => {
+        if (event.node.label == "Move.toml" || moveFileNames[event.node.key as keyof typeof moveFileNames].substring(moveFileNames[event.node.key as keyof typeof moveFileNames].length - 5) == ".move") {
+            dispatch({ type: 'SET_FILE_ID', payload: event.node.key != undefined && "string" == typeof event.node.key ? event.node.key : null })
         }
     };
     const nodeTemplate = (node: TreeNode, options: TreeNodeTemplateOptions) => {
@@ -199,7 +207,9 @@ export const MoveFileTree = () => {
             <ContextMenu model={menuMoveFile} ref={cmMoveFile} onHide={() => setSelectedNodeKey(undefined)} />
             <ContextMenu model={menuFolder} ref={cmFolder} onHide={() => setSelectedNodeKey(undefined)} />
             <div className="card">
-                <Tree nodeTemplate={nodeTemplate} value={nodes} expandedKeys={expandedKeys} onToggle={e => setExpandedKeys(e.value)}
+                <Tree nodeTemplate={nodeTemplate} value={nodes} expandedKeys={expandedKeys}
+                    onNodeClick={onTreeNodeClick}
+                    onToggle={e => setExpandedKeys(e.value)}
                     contextMenuSelectionKey={selectedNodeKey} onContextMenuSelectionChange={event => { if (event.value != null && "string" === typeof event.value) { setSelectedNodeKey(event.value) } }}
                     onContextMenu={onTreeContextMenu} />
             </div>

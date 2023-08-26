@@ -2,6 +2,7 @@ import { Splitter, SplitterPanel } from '@aric0x02/components/';
 import { ReactElement } from 'react';
 import { TabView, TabPanel } from 'primereact/tabview';
 import { MoveFileTree } from '../Tree';
+import { Tabs } from '../Tabs';
 type LayoutProps = {
     header: ReactElement;
     editor: ReactElement;
@@ -20,7 +21,7 @@ export const Layout = ({ header, editor, console }: LayoutProps) => {
                                 <MoveFileTree />
                             </SplitterPanel>
                             <SplitterPanel className="flex align-items-center justify-content-center" size={80}>
-                                <TabView >
+                                {/* <TabView >
                                     <TabPanel header="Sticky1" key="sticky1" closable>
                                         <div style={{ backgroundColor: 'cyan', width: '100%', height: '100%', overflow: 'auto', position: 'fixed' }}>{editor}</div>
                                     </TabPanel>
@@ -30,8 +31,8 @@ export const Layout = ({ header, editor, console }: LayoutProps) => {
                                     <TabPanel header="Sticky2" key="sticky2" closable>
                                         sticky2
                                     </TabPanel>
-                                </TabView>
-
+                                </TabView> */}
+                                <Tabs />
                             </SplitterPanel>
                         </Splitter>
                     </SplitterPanel>
