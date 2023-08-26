@@ -28,7 +28,7 @@ export type State = {
   monacoUri: Uri | null;
   gist: GistState;
   contractSize: number | null;
-  fileId: string | null;
+  fileId: string[] | null;
   rustAnalyzer: boolean;
 };
 
@@ -62,7 +62,7 @@ export type Action =
   | { type: 'SET_GIST_STATE'; payload: GistState }
   | { type: 'SET_URI'; payload: Uri }
   | { type: 'SET_CONTRACT_SIZE'; payload: number | null }
-  | { type: 'SET_FILE_ID'; payload: string | null }
+  | { type: 'SET_FILE_ID'; payload: string[] | null }
   | { type: 'SET_RUST_ANALYZER_STATE'; payload: boolean };
 
 export type Dispatch = (action: Action) => void;

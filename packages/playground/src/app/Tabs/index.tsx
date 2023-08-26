@@ -40,9 +40,9 @@ export const Tabs = () => {
     useEffect(() => {
         if (!fileId) return;
 
-        const index = tabPanels == undefined ? -1 : tabPanels.findIndex((p) => p != undefined && p.id == fileId);
+        const index = tabPanels == undefined ? -1 : tabPanels.findIndex((p) => p != undefined && p.id == fileId[0]);
         if (index == undefined || -1 == index) {
-            addTab(fileId)
+            addTab(fileId[0]==undefined?(nextId+100)+"":fileId[0], fileId[1]==undefined?"Tab "+(nextId+100):fileId[1])
             setActiveIndex(tabPanels.length + 1);
         } else {
             setActiveIndex(index + 1);
@@ -56,12 +56,12 @@ export const Tabs = () => {
         // setTabPanels(tabPanels.filter((p, i) => i !== e.index-1));
     };
 
-    const addTab = (id: string) => {
+    const addTab = (id: string, name: string) => {
         const tabs = [...tabPanels];
 
         tabs.push({
             id,
-            header: "Tab " + (nextId + 1),
+            header: name,
             body: "Text " + (nextId + 1)
         });
         setNextId(nextId + 1);
@@ -69,7 +69,7 @@ export const Tabs = () => {
     };
     return (
         <div className="tabview-demo">
-            <button onClick={() => addTab((nextId + 100) + "")}>add</button>
+            <button onClick={() => addTab((nextId + 100) + "", "Tab " + (nextId + 100))}>add</button>
             <div className="card">
                 <TabView
                     onTabClose={removeTab}
