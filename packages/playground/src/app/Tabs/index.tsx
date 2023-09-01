@@ -4,7 +4,7 @@ import "primereact/resources/primereact.css";
 import "./index.css";
 import { MessageContext, MessageProvider } from '~/context/messages/';
 import { MessageDispatch, MessageState } from '~/context/messages/reducer';
-import React,{ useState, useContext, useEffect, useRef,ReactElement } from "react";
+import React, { useState, useContext, useEffect, useRef, ReactElement } from "react";
 import { TabView, TabPanel } from "primereact/tabview";
 import { MoveEditor } from '@aric0x02/move-editor';
 
@@ -50,7 +50,7 @@ export interface TabViewTabChangeEvent {
 // type TabsProps = {
 //     editor: ReactElement;
 // };
-export const Tabs = ( ) => {
+export const Tabs = () => {
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     const [fileName, setFileName] = useState<string | undefined>("script.js");
 
@@ -58,9 +58,9 @@ export const Tabs = ( ) => {
     useEffect(() => {
         editorRef.current?.focus();
     }, [file.name]);
-    const [state,dispatch]: [State, Dispatch] = useContext(AppContext);
+    const [state, dispatch]: [State, Dispatch] = useContext(AppContext);
     const [, messageDispatch]: [MessageState, MessageDispatch] = useContext(MessageContext);
-    const { openFile } = state;
+    const { openFile, deleteFile } = state;
     const [nextId, setNextId] = useState(3);
     const [tabPanels, setTabPanels] = useState([
         { id: "100", header: "script.js", body: "script.js" },
@@ -79,6 +79,17 @@ export const Tabs = ( ) => {
             setActiveIndex(index + 1);
         }
     }, [openFile]);
+    useEffect(() => {
+        if (!deleteFile) return;
+
+        const index = tabPanels == undefined ? -1 : tabPanels.findIndex((p) => p != undefined && p.header == deleteFile);
+        if (-1 != index) {
+            console.log("removing index " + index);
+            delete tabPanels[index];
+            setTabPanels(tabPanels);
+            setActiveIndex(tabPanels.length>0?tabPanels.length-1:0);
+        }
+    }, [deleteFile]);
 
     const removeTab = (e: TabViewTabCloseEvent) => {
         console.log(tabPanels, "removing index " + e.index);

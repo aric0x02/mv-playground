@@ -94,6 +94,8 @@ export const MoveFileTree = () => {
             icon: 'pi pi-trash',
             command: () => {
                 if (nodes[0] != undefined && nodes[0]?.children[0] != undefined && nodes[0]?.children[0].children != undefined && nodes[0]?.children[0].children.length > 0) {
+                    const sn=nodes[0]?.children[0].children.filter((p) => p.key == selectedNodeKey)[0];
+                    dispatch({ type: 'SET_DELETE_FILE', payload: sn!=undefined && sn.key != undefined && "string" == typeof sn.key ? moveFileNames[sn.key as keyof typeof moveFileNames]??sn.label : undefined });
                     nodes[0].children[0].children = nodes[0]?.children[0].children.filter((p) => p.key != selectedNodeKey);
                     setNodes(nodes);
                     if (toast.current != null) toast.current.show({ severity: 'success', summary: 'Node Key', detail: selectedNodeKey });
@@ -169,7 +171,7 @@ export const MoveFileTree = () => {
     };
     const onTreeNodeClick = (event: TreeNodeClickEvent) => {
         if (event.node.label == "Move.toml" || moveFileNames[event.node.key as keyof typeof moveFileNames].substring(moveFileNames[event.node.key as keyof typeof moveFileNames].length - 5) == ".move") {
-            dispatch({ type: 'SET_OPEN_FILE', payload:event.node.label == "Move.toml"?[event.node.key,event.node.label]: event.node.key != undefined && "string" == typeof event.node.key ? [event.node.key,moveFileNames[event.node.key as keyof typeof moveFileNames]] : null })
+            dispatch({ type: 'SET_OPEN_FILE', payload: event.node.label == "Move.toml" ? [event.node.key, event.node.label] : event.node.key != undefined && "string" == typeof event.node.key ? [event.node.key, moveFileNames[event.node.key as keyof typeof moveFileNames]] : null })
         }
     };
     const nodeTemplate = (node: TreeNode, options: TreeNodeTemplateOptions) => {

@@ -15,7 +15,7 @@ export const defaultState: State = {
     gist: { type: 'NOT_ASKED' },
     contractSize: null,
     openFile: null,
-    deleteFile: null,
+    deleteFile: undefined,
     language: undefined,
     code: undefined,
     path: undefined,
@@ -33,7 +33,7 @@ export type State = {
     gist: GistState;
     contractSize: number | null;
     openFile: string[] | null;
-    deleteFile: string | null;
+    deleteFile: string | undefined;
     language: string | undefined;
     code: string | undefined;
     path: string | undefined;
@@ -71,7 +71,7 @@ export type Action =
     | { type: 'SET_URI'; payload: Uri }
     | { type: 'SET_CONTRACT_SIZE'; payload: number | null }
     | { type: 'SET_OPEN_FILE'; payload: string[] | null }
-    | { type: 'SET_DELETE_FILE'; payload: string | null }
+    | { type: 'SET_DELETE_FILE'; payload: string | undefined }
     | { type: 'SET_LANGUAGE'; payload: string | undefined }
     | { type: 'SET_CODE'; payload: string | undefined }
     | { type: 'SET_PATH'; payload: string | undefined }
