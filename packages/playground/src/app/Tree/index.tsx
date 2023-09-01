@@ -169,7 +169,7 @@ export const MoveFileTree = () => {
     };
     const onTreeNodeClick = (event: TreeNodeClickEvent) => {
         if (event.node.label == "Move.toml" || moveFileNames[event.node.key as keyof typeof moveFileNames].substring(moveFileNames[event.node.key as keyof typeof moveFileNames].length - 5) == ".move") {
-            dispatch({ type: 'SET_FILE_ID', payload: event.node.key != undefined && "string" == typeof event.node.key ? [event.node.key,moveFileNames[event.node.key as keyof typeof moveFileNames]] : null })
+            dispatch({ type: 'SET_OPEN_FILE', payload:event.node.label == "Move.toml"?[event.node.key,event.node.label]: event.node.key != undefined && "string" == typeof event.node.key ? [event.node.key,moveFileNames[event.node.key as keyof typeof moveFileNames]] : null })
         }
     };
     const nodeTemplate = (node: TreeNode, options: TreeNodeTemplateOptions) => {
