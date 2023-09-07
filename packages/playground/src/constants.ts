@@ -8,6 +8,6 @@ export const INCOMPATIBLE_SIZE = 80;
 
 export const CONTRACTS_UI_URL = 'https://contracts-ui.substrate.io/';
 
-export const INK_DOCS_URL = 'https://paritytech.github.io/ink-docs/';
+export const INK_DOCS_URL = 'https://github.com/MystenLabs/awesome-move';
 
-export const REPO_URL = 'https://github.com/paritytech/ink-playground';
+export const REPO_URL = 'https://github.com/aric0x02/mv-playground';

@@ -4,7 +4,7 @@ use std::{cmp::Ordering, ops, time::Instant};
 mod macros;
 pub mod panic_context;
 pub mod process;
-
+pub mod thread;
 pub use always_assert::{always, never};
 
 #[inline(always)]

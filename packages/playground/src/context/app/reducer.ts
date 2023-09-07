@@ -15,10 +15,10 @@ export const defaultState: State = {
     gist: { type: 'NOT_ASKED' },
     contractSize: null,
     openFile: null,
+    renameFile: null,
     deleteFile: undefined,
-    language: undefined,
-    code: undefined,
-    path: undefined,
+    fileId: undefined,
+    codes: undefined,
     rustAnalyzer: false,
 };
 
@@ -33,10 +33,10 @@ export type State = {
     gist: GistState;
     contractSize: number | null;
     openFile: string[] | null;
+    renameFile: string[] | null;
     deleteFile: string | undefined;
-    language: string | undefined;
-    code: string | undefined;
-    path: string | undefined;
+    fileId: string | undefined;
+    codes: object | undefined;
     rustAnalyzer: boolean;
 };
 
@@ -71,10 +71,10 @@ export type Action =
     | { type: 'SET_URI'; payload: Uri }
     | { type: 'SET_CONTRACT_SIZE'; payload: number | null }
     | { type: 'SET_OPEN_FILE'; payload: string[] | null }
+    | { type: 'SET_RENAME_FILE'; payload: string[] | null }
     | { type: 'SET_DELETE_FILE'; payload: string | undefined }
-    | { type: 'SET_LANGUAGE'; payload: string | undefined }
-    | { type: 'SET_CODE'; payload: string | undefined }
-    | { type: 'SET_PATH'; payload: string | undefined }
+    | { type: 'SET_FILE_ID'; payload: string | undefined }
+    | { type: 'SET_PATH_CODE'; payload: string[] | undefined }
     | { type: 'SET_RUST_ANALYZER_STATE'; payload: boolean };
 
 export type Dispatch = (action: Action) => void;
@@ -136,25 +136,30 @@ export const reducer = (state: State, action: Action): State => {
                 ...state,
                 openFile: action.payload,
             };
+        case 'SET_RENAME_FILE':
+            return {
+                ...state,
+                renameFile: action.payload,
+            };
         case 'SET_DELETE_FILE':
             return {
                 ...state,
                 deleteFile: action.payload,
             };
-        case 'SET_LANGUAGE':
+        case 'SET_PATH_CODE':
+            {
+                const { codes } = state;
+                const payload = action.payload ?? [];
+                const newCodes = { ...codes, [payload[0] ?? "0"]: { path: payload[1], code: payload[2] } }
+                return {
+                    ...state,
+                    codes: newCodes, fileId: payload[0] ?? "0"
+                };
+            }
+        case 'SET_FILE_ID':
             return {
                 ...state,
-                language: action.payload,
-            };
-        case 'SET_CODE':
-            return {
-                ...state,
-                code: action.payload,
-            };
-        case 'SET_PATH':
-            return {
-                ...state,
-                path: action.payload,
+                fileId: action.payload,
             };
         default:
             return state;

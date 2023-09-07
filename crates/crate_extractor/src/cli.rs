@@ -17,7 +17,7 @@ use clap::{
     Subcommand,
 };
 
-const DEFAULT_MANIFEST_PATH: &str = "./Cargo.toml";
+const DEFAULT_MANIFEST_PATH: &str = "./Move.toml";
 const DEFAULT_OUTPUT: &str = "./change.json";
 
 #[derive(Parser, Debug, Clone)]

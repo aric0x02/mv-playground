@@ -15,7 +15,7 @@ import { AppContext, AppProvider } from '~/context/app/';
 // import Editor from "@monaco-editor/react";
 import files from "./files";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-
+import { type editor } from 'monaco-editor';
 /**
  * Custom close event.
  * @see {@link TabViewProps.onTabClose}
@@ -60,7 +60,7 @@ export const Tabs = () => {
     }, [file.name]);
     const [state, dispatch]: [State, Dispatch] = useContext(AppContext);
     const [, messageDispatch]: [MessageState, MessageDispatch] = useContext(MessageContext);
-    const { openFile, deleteFile } = state;
+    const { openFile, renameFile, deleteFile } = state;
     const [nextId, setNextId] = useState(3);
     const [tabPanels, setTabPanels] = useState([
         { id: "100", header: "script.js", body: "script.js" },
@@ -87,10 +87,24 @@ export const Tabs = () => {
             console.log("removing index " + index);
             delete tabPanels[index];
             setTabPanels(tabPanels);
-            setActiveIndex(tabPanels.length>0?tabPanels.length-1:0);
+            setActiveIndex(tabPanels.length > 0 ? tabPanels.length - 1 : 0);
         }
     }, [deleteFile]);
+    useEffect(() => {
+        if (!renameFile) return;
 
+        const index = tabPanels == undefined ? -1 : tabPanels.findIndex((p) => p != undefined && p.id == renameFile[0]);
+        if (-1 != index) {
+            console.log("renaming index " + index);
+            if (tabPanels !== undefined && index < tabPanels.length && typeof tabPanels[index] !== 'undefined') {
+                const tab = tabPanels[index];
+                if (tab != undefined) {
+                    tab.header = renameFile[1] ?? "";
+                }
+            }
+            setTabPanels([...tabPanels]);
+        }
+    }, [renameFile]);
     const removeTab = (e: TabViewTabCloseEvent) => {
         console.log(tabPanels, "removing index " + e.index);
         delete tabPanels[e.index - 1];
@@ -109,13 +123,13 @@ export const Tabs = () => {
         setNextId(nextId + 1);
         setTabPanels(tabs);
         updateFileName(name);
+        const fileObj = files[name as keyof typeof files] == undefined ? files["TodoList.move"] : files[name as keyof typeof files];
+        dispatch({ type: 'SET_PATH_CODE', payload: [id, name, fileObj.value] });
+
     };
     const updateFileName = (name: string | undefined) => {
         const fn = files[name as keyof typeof files] == undefined ? "TodoList.move" : name;
         setFileName(fn);
-        // dispatch({ type: 'SET_CODE', payload: file.value });
-        // dispatch({ type: 'SET_LANGUAGE', payload: file.language });
-        // dispatch({ type: 'SET_PATH', payload: file.name });
     };
 
     const onRustAnalyzerStartLoad = () => {
@@ -135,6 +149,12 @@ export const Tabs = () => {
             payload: { status: 'DONE', content: 'Rust Analyzer Ready' },
         });
     };
+    const handleEditorChange = (value: string | undefined, event: editor.IModelContentChangedEvent) => {
+        console.log(value, event);
+        const tab = tabPanels[activeIndex - 1];
+        dispatch({ type: 'SET_PATH_CODE', payload: [tab?.id ?? "", tab?.header ?? "", value ?? ""] });
+    };
+
     return (
         <div className="tabview-demo">
             <button onClick={() => addTab((nextId + 100) + "", "Tab " + (nextId + 100))}>add</button>
@@ -142,7 +162,13 @@ export const Tabs = () => {
                 <TabView
                     onTabClose={removeTab}
                     activeIndex={activeIndex}
-                    onTabChange={(e) => { setActiveIndex(e.index); updateFileName(tabPanels[e.index - 1]?.header); }}
+                    onTabChange={(e) => {
+                        setActiveIndex(e.index); updateFileName(tabPanels[e.index - 1]?.header);
+                        console.log(e.index, "===========", tabPanels[e.index - 1]);
+                        if (tabPanels[e.index - 1] != undefined) {
+                            dispatch({ type: 'SET_FILE_ID', payload: tabPanels[e.index - 1]?.id });
+                        }
+                    }}
                     renderActiveOnly={false}
                 >
                     <TabPanel header="Sticky" key="sticky">
@@ -161,6 +187,7 @@ export const Tabs = () => {
                 <MoveEditor
                     onRustAnalyzerStartLoad={onRustAnalyzerStartLoad}
                     onRustAnalyzerFinishLoad={onRustAnalyzerFinishLoad}
+                    onCodeChange={handleEditorChange}
                     numbering={state.numbering}
                     darkmode={state.darkmode}
                     rustAnalyzer={state.rustAnalyzer}

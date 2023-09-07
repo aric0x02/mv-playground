@@ -64,6 +64,7 @@ pub async fn route_compile(
     compile_strategy: CompileStrategy,
     req: Json<CompilationRequest>,
 ) -> impl Responder {
+ println!("Warning: =========================.");
     let compile_result = spawn_blocking(move || {
         compile_strategy(CompilationRequest {
             source: req.source.to_string(),toml: req.toml.to_string(),

@@ -41,4 +41,20 @@ impl ProjectWorkspace {
     pub fn load_detached_files(detached_files: Vec<AbsPathBuf>) -> Result<ProjectWorkspace> {
         Ok(ProjectWorkspace::DetachedFiles { files: detached_files })
     }
+/// Returns the roots for the current `ProjectWorkspace`
+    /// The return type contains the path and whether or not
+    /// the root is a member of the current workspace
+    pub fn to_roots(&self) -> Vec<PackageRoot> {
+        match self {
+            ProjectWorkspace::DetachedFiles { files } => files
+                .iter()
+                .map(|detached_file| PackageRoot {
+                    is_local: true,
+                    include: vec![detached_file.clone()],
+                    exclude: Vec::new(),
+                })
+                .collect(),
+            &ProjectWorkspace::Dove { .. } => todo!(),
+        }
+    }
 }

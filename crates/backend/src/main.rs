@@ -40,6 +40,7 @@ use actix_web::{
         self,
         Condition,
         DefaultHeaders,
+        Logger,
     },
     web,
     web::{
@@ -82,7 +83,8 @@ async fn main() -> std::io::Result<()> {
         .const_labels(labels)
         .build()
         .unwrap();
-
+// access logs are printed with the INFO level so ensure it is enabled by default
+env_logger::init_from_env(env_logger::Env::new().default_filter_or("info"));
     HttpServer::new(move || {
         let opts: Opts = opts.clone();
         let frontend_folder = opts.frontend_folder.clone();
@@ -97,6 +99,8 @@ async fn main() -> std::io::Result<()> {
                     .add(("Cross-Origin-Opener-Policy", "same-origin"))
                     .add(("Cross-Origin-Embedder-Policy", "require-corp")),
             )
+            .wrap(Logger::default())
+            .wrap(Logger::new("%a %{User-Agent}i"))
             .route(
                 "/compile",
                 post().to(|body| route_compile(COMPILE_SANDBOXED, body)),

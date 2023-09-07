@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-use crate::crate_graph_json;
+// use crate::crate_graph_json;
 use base_db::{
     Change,
-    CrateGraph,
-    CrateId,
+    // CrateGraph,
+    // CrateId,
     FileId,
     FileSet,
     SourceRoot,
     VfsPath,
 };
-use crate_graph_json::CrateGraphJson;
+// use crate_graph_json::CrateGraphJson;
 use serde::{
     Deserialize,
     Serialize,
@@ -32,7 +32,7 @@ use std::sync::Arc;
 /// Provides a (de-)serializable version of Rust Analyzers `Change` object, together with an implementation of the From traits for `Change` and `ChangeJson`.
 #[derive(Serialize, Deserialize, Debug, Default, Clone)]
 pub struct ChangeJson {
-    crate_graph: Option<CrateGraphJson>,
+    // crate_graph: Option<CrateGraphJson>,
     local_roots: Option<SourceRootJson>,
     library_roots: Option<SourceRootJson>,
     files_changed: FilesJson,
@@ -40,7 +40,7 @@ pub struct ChangeJson {
 
 impl From<&Change> for ChangeJson {
     fn from(change: &Change) -> Self {
-        let crate_graph = change.crate_graph.as_ref().map(CrateGraphJson::from);
+        // let crate_graph = change.crate_graph.as_ref().map(CrateGraphJson::from);
         let local_roots = change
             .roots
             .as_ref()
@@ -51,7 +51,7 @@ impl From<&Change> for ChangeJson {
             .map(|roots| SourceRootJson::from(roots, true));
         let files_changed = FilesJson::from(&change.files_changed);
         ChangeJson {
-            crate_graph,
+            // crate_graph,
             local_roots,
             library_roots,
             files_changed,
@@ -65,29 +65,29 @@ impl From<Change> for ChangeJson {
     }
 }
 
-pub trait Find {
-    fn find_crate(&self, display_name: &str) -> Option<CrateId>;
-}
+// pub trait Find {
+//     fn find_crate(&self, display_name: &str) -> Option<CrateId>;
+// }
 
-impl Find for CrateGraph {
-    fn find_crate(&self, display_name: &str) -> Option<CrateId> {
-        self.iter()
-            .find(|it| self[*it].display_name.as_deref() == Some(display_name))
-    }
-}
+// impl Find for CrateGraph {
+//     fn find_crate(&self, display_name: &str) -> Option<CrateId> {
+//         self.iter()
+//             .find(|it| self[*it].display_name.as_deref() == Some(display_name))
+//     }
+// }
 
-impl Find for Change {
-    fn find_crate(&self, display_name: &str) -> Option<CrateId> {
-        self.crate_graph.as_ref()?.find_crate(display_name)
-    }
-}
+// impl Find for Change {
+//     fn find_crate(&self, display_name: &str) -> Option<CrateId> {
+//         self.crate_graph.as_ref()?.find_crate(display_name)
+//     }
+// }
 
 impl From<&ChangeJson> for Change {
     fn from(change_json: &ChangeJson) -> Self {
         let mut change = Change::default();
-        if let Some(graph) = change_json.crate_graph.as_ref() {
-            change.set_crate_graph(CrateGraph::from(graph))
-        }
+        // if let Some(graph) = change_json.crate_graph.as_ref() {
+        //     change.set_crate_graph(CrateGraph::from(graph))
+        // }
         let mut roots = Vec::new();
         if let Some(local) = change_json.local_roots.as_ref() {
             roots.append(&mut local.to_roots(false))

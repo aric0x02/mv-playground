@@ -486,8 +486,10 @@ dependencies = [
  "actix-web",
  "actix-web-prom",
  "clap",
+ "env_logger",
  "futures",
  "hubcaps",
+ "log",
  "sandbox",
  "serde",
  "serde_json",
@@ -827,7 +829,7 @@ dependencies = [
 name = "change_json"
 version = "0.1.0"
 dependencies = [
- "ra_ap_base_db",
+ "base_db",
  "ra_ap_cfg",
  "ra_ap_tt",
  "serde",
@@ -1079,18 +1081,18 @@ dependencies = [
  "change_json",
  "clap",
  "crossbeam-channel",
+ "ide",
+ "ide_db",
  "log",
+ "project_model",
  "ra_ap_hir",
- "ra_ap_ide",
- "ra_ap_ide_db",
  "ra_ap_profile",
- "ra_ap_project_model",
  "ra_ap_tt",
- "ra_ap_vfs",
- "ra_ap_vfs-notify",
  "serde",
  "serde_json",
  "tracing",
+ "vfs",
+ "vfs-notify",
 ]
 
 [[package]]
@@ -2953,9 +2955,9 @@ dependencies = [
 
 [[package]]
 name = "log"
-version = "0.4.18"
+version = "0.4.20"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "518ef76f2f87365916b142844c16d8fefd85039bc5699050210a7778ee1cd1de"
+checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
 name = "lsp-server"
@@ -3182,9 +3184,9 @@ checksum = "2bf50223579dc7cdcfb3bfcacf7069ff68243f8c363f62ffa99cf000a6b9c451"
 
 [[package]]
 name = "notify"
-version = "5.0.0-pre.15"
+version = "5.1.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "553f9844ad0b0824605c20fb55a661679782680410abfb1a8144c2e7e437e7a7"
+checksum = "58ea850aa68a06e48fdb069c0ec44d0d64c8dbffa49bf3b6f7f0a901fdea1ba9"
 dependencies = [
  "bitflags",
  "crossbeam-channel",
@@ -3195,7 +3197,7 @@ dependencies = [
  "libc",
  "mio",
  "walkdir",
- "winapi",
+ "windows-sys 0.42.0",
 ]
 
 [[package]]
@@ -4032,29 +4034,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ra_ap_project_model"
-version = "0.0.120"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "224960380b6faaad7b1eae00709e68c180debd4a81ce3c146fbdb0e7dd13b227"
-dependencies = [
- "anyhow",
- "cargo_metadata",
- "expect-test",
- "ra_ap_base_db",
- "ra_ap_cfg",
- "ra_ap_la-arena",
- "ra_ap_paths",
- "ra_ap_profile",
- "ra_ap_stdx",
- "ra_ap_toolchain",
- "rustc-hash",
- "semver",
- "serde",
- "serde_json",
- "tracing",
-]
-
-[[package]]
 name = "ra_ap_stdx"
 version = "0.0.120"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4138,21 +4117,6 @@ dependencies = [
  "indexmap",
  "ra_ap_paths",
  "rustc-hash",
-]
-
-[[package]]
-name = "ra_ap_vfs-notify"
-version = "0.0.120"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d408f0c701de3623dafba612914c8dc5013b121b2ca1318c64c2a6d2ab28216"
-dependencies = [
- "crossbeam-channel",
- "jod-thread",
- "notify",
- "ra_ap_paths",
- "ra_ap_vfs",
- "tracing",
- "walkdir",
 ]
 
 [[package]]
@@ -5559,6 +5523,8 @@ version = "0.0.0"
 dependencies = [
  "always-assert",
  "backtrace",
+ "crossbeam-channel",
+ "jod-thread",
  "libc",
  "miow 0.3.7",
  "winapi",
@@ -6390,6 +6356,19 @@ dependencies = [
  "indexmap",
  "paths",
  "rustc-hash",
+]
+
+[[package]]
+name = "vfs-notify"
+version = "0.0.0"
+dependencies = [
+ "crossbeam-channel",
+ "notify",
+ "paths",
+ "stdx",
+ "tracing",
+ "vfs",
+ "walkdir",
 ]
 
 [[package]]

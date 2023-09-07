@@ -94,8 +94,8 @@ export const MoveFileTree = () => {
             icon: 'pi pi-trash',
             command: () => {
                 if (nodes[0] != undefined && nodes[0]?.children[0] != undefined && nodes[0]?.children[0].children != undefined && nodes[0]?.children[0].children.length > 0) {
-                    const sn=nodes[0]?.children[0].children.filter((p) => p.key == selectedNodeKey)[0];
-                    dispatch({ type: 'SET_DELETE_FILE', payload: sn!=undefined && sn.key != undefined && "string" == typeof sn.key ? moveFileNames[sn.key as keyof typeof moveFileNames]??sn.label : undefined });
+                    const sn = nodes[0]?.children[0].children.filter((p) => p.key == selectedNodeKey)[0];
+                    dispatch({ type: 'SET_DELETE_FILE', payload: sn != undefined && sn.key != undefined && "string" == typeof sn.key ? moveFileNames[sn.key as keyof typeof moveFileNames] ?? sn.label : undefined });
                     nodes[0].children[0].children = nodes[0]?.children[0].children.filter((p) => p.key != selectedNodeKey);
                     setNodes(nodes);
                     if (toast.current != null) toast.current.show({ severity: 'success', summary: 'Node Key', detail: selectedNodeKey });
@@ -146,6 +146,7 @@ export const MoveFileTree = () => {
                         fileName = addMoveFileExtension(fileName);
                         fileName = fileName.trim();
                         updateMoveFileNames(key, fileName);
+                        dispatch({ type: 'SET_RENAME_FILE', payload: [key + "", fileName] })
                         break
                     }
                 }
@@ -153,6 +154,7 @@ export const MoveFileTree = () => {
         } else {
             fileName = fileName.trim();
             updateMoveFileNames(key, fileName);
+            dispatch({ type: 'SET_RENAME_FILE', payload: [key + "", fileName] })
         }
 
         updateInPlaceVisables(key, false);

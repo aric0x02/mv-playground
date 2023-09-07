@@ -124,7 +124,7 @@ export const Header = (): ReactElement => {
         <div className="flex-grow" />
 
         <ButtonWithIcon
-          label={'About ink!'}
+          label={'About Move'}
           Icon={DocsIcon}
           darkmode={state.darkmode}
           testId={'buttonIconInkDocs'}

@@ -1,8 +1,11 @@
-import MonacoEditor, { MonacoEditorProps, monaco } from 'react-monaco-editor';
+import MonacoEditor, { MonacoEditorProps } from 'react-monaco-editor';
 import { Uri } from 'monaco-editor/esm/vs/editor/editor.api';
 import Editor, { OnChange } from "@monaco-editor/react";
 import  { useEffect, useRef, ReactElement } from "react";
-
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import type * as monacotype from 'monaco-editor/esm/vs/editor/editor.api';
+export type Monaco = typeof monacotype;
+import {  type editor } from 'monaco-editor';
 const dark_teal = '67c6b0';
 const dark_text = 'ffffff';
 const dark_green = '709950';
@@ -123,12 +126,15 @@ export interface MoveEditorProps {
     path?: string;
 }
 export const MoveEditor = (props: MoveEditorProps): ReactElement | null => {
-    const editorDidMount = async (editor: MonacoEditor['editor']): Promise<void> => {
+    const editorDidMount = async (editor: editor.IStandaloneCodeEditor | null,_monaco:Monaco | null): Promise<void> => {
         if (editor) {
             editor.focus();
             const model = editor.getModel();
-            setTimeout(() => editor.setSelection(new monaco.Selection(0, 0, 0, 0)), 10);
+            console.log("======model==========",model)
+            // setTimeout(() => editor.setSelection(new monaco.Selection(0, 0, 0, 0)), 10);
             if (model) {
+            console.log("======model.uri==========",model.uri)
+
                 props.setURI && props.setURI(model.uri);
                 await import('./utils/startRustAnalyzer').then(async code => {
                     props.onRustAnalyzerStartLoad && props.onRustAnalyzerStartLoad();
@@ -183,6 +189,11 @@ export const MoveEditor = (props: MoveEditorProps): ReactElement | null => {
     //     const fn = files[name as keyof typeof files] == undefined ? "TodoList.move" : name;
     //     setFileName(fn);
     // };
+  function handleEditorValidation(markers:any) {
+    // model markers
+    console.log("===============onValidate======");
+    markers.forEach((marker:any) => console.log('onValidate:', marker.message));
+  }
     return (
         <Editor
             theme={props.darkmode ? darkTheme : lightTheme}
@@ -190,6 +201,7 @@ export const MoveEditor = (props: MoveEditorProps): ReactElement | null => {
             options={options}
             onChange={props.onCodeChange}
             onMount={editorDidMount}
+            onValidate={handleEditorValidation}
             defaultValue={props.defaultValue}
             defaultLanguage={props.defaultLanguage}
             defaultPath={props.defaultPath}

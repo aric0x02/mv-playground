@@ -11,6 +11,8 @@ doctest = false
 [dependencies]
 libc = "0.2.93"
 backtrace = { version = "0.3.44", optional = true }
+jod-thread = "0.1.2"
+crossbeam-channel = "0.5.5"
 always-assert = { version = "0.1.2", features = ["log"] }
 # Think twice before adding anything here
 

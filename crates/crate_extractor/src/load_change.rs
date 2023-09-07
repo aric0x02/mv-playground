@@ -19,21 +19,21 @@ use crossbeam_channel::{
 };
 use ide::Change;
 use ide_db::base_db::{
-    CrateGraph,
+    // CrateGraph,
     SourceRoot,
     VfsPath,
 };
 use project_model::{
-    CargoConfig,
+    // CargoConfig,
     ProjectManifest,
     ProjectWorkspace,
-    WorkspaceBuildScripts,
+    // WorkspaceBuildScripts,
 };
 use std::sync::Arc;
 use vfs::{
     file_set::FileSetConfig,
     loader::Handle,
-    AbsPath,
+    // AbsPath,
     AbsPathBuf,
 };
 
@@ -45,21 +45,21 @@ pub struct LoadCargoConfig {
 
 pub fn load_change_at(
     manifest_path: &AbsPathBuf,
-    cargo_config: &CargoConfig,
+    // cargo_config: &CargoConfig,
     load_config: &LoadCargoConfig,
     progress: &dyn Fn(String),
 ) -> Result<Change> {
-    let root = ProjectManifest::discover_single(manifest_path)?;
-    let workspace = ProjectWorkspace::load(root, cargo_config, progress)?;
+    let root = ProjectManifest::discover_single(manifest_path.as_path())?;
+    let workspace = ProjectWorkspace::load(root)?;
 
-    load_change(workspace, cargo_config, load_config, progress)
+    load_change(workspace,  load_config, progress)
 }
 
 pub fn load_change(
-    mut ws: ProjectWorkspace,
-    cargo_config: &CargoConfig,
-    load_config: &LoadCargoConfig,
-    progress: &dyn Fn(String),
+    ws: ProjectWorkspace,
+    // cargo_config: &CargoConfig,
+    _load_config: &LoadCargoConfig,
+    _progress: &dyn Fn(String),
 ) -> Result<Change> {
     let (sender, receiver) = unbounded();
     let mut vfs = vfs::Vfs::default();
@@ -70,21 +70,21 @@ pub fn load_change(
         Box::new(loader)
     };
 
-    ws.set_build_scripts(
-        if load_config.load_out_dirs_from_check {
-            ws.run_build_scripts(cargo_config, progress)?
-        } else {
-            WorkspaceBuildScripts::default()
-        },
-    );
+    // ws.set_build_scripts(
+    //     if load_config.load_out_dirs_from_check {
+    //         ws.run_build_scripts(cargo_config, progress)?
+    //     } else {
+    //         WorkspaceBuildScripts::default()
+    //     },
+    // );
 
-    let crate_graph =
-        ws.to_crate_graph(&mut |_, _| Ok(Vec::new()), &mut |path: &AbsPath| {
-            let contents = loader.load_sync(path);
-            let path = vfs::VfsPath::from(path.to_path_buf());
-            vfs.set_file_contents(path.clone(), contents);
-            vfs.file_id(&path)
-        });
+    // let crate_graph =
+    //     ws.to_crate_graph(&mut |_, _| Ok(Vec::new()), &mut |path: &AbsPath| {
+    //         let contents = loader.load_sync(path);
+    //         let path = vfs::VfsPath::from(path.to_path_buf());
+    //         vfs.set_file_contents(path.clone(), contents);
+    //         vfs.file_id(&path)
+    //     });
 
     let project_folders = ProjectFolders::new(&[ws], &[]);
     loader.set_config(vfs::loader::Config {
@@ -93,9 +93,9 @@ pub fn load_change(
         version: 0,
     });
 
-    log::debug!("crate graph: {:?}", crate_graph);
+    // log::debug!("crate graph: {:?}", crate_graph);
     let change = load_crate_graph(
-        crate_graph,
+        // crate_graph,
         project_folders.source_root_config,
         &mut vfs,
         &receiver,
@@ -105,7 +105,7 @@ pub fn load_change(
 }
 
 fn load_crate_graph(
-    crate_graph: CrateGraph,
+    // crate_graph: CrateGraph,
     source_root_config: SourceRootConfig,
     vfs: &mut vfs::Vfs,
     receiver: &Receiver<vfs::loader::Message>,
@@ -143,7 +143,7 @@ fn load_crate_graph(
     let source_roots = source_root_config.partition(vfs);
     analysis_change.set_roots(source_roots);
 
-    analysis_change.set_crate_graph(crate_graph);
+    // analysis_change.set_crate_graph(crate_graph);
 
     analysis_change
 }

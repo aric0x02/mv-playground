@@ -1,5 +1,5 @@
 use ide_db::base_db::salsa::ParallelDatabase;
-use ide_db::base_db::{salsa, Cancelled, Change, FileId};
+pub use ide_db::base_db::{salsa, Cancelled, Change, FileId};
 use ide_db::LineIndexDatabase;
 use ide_db::{LineIndex, RootDatabase};
 use ide_diagnostics::Diagnostic;

@@ -18,7 +18,7 @@ const App = (): ReactElement => {
     const editorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
     useEffect(() => {
         editorRef.current?.focus();
-    }, [state.path]);
+    }, [state.fileId]);
     useEffect(() => {
         if (!uri) return;
         loadCode(state, { app: dispatch, message: messageDispatch }).then(code => {
